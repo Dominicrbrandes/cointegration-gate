@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.DS_Store
+Thumbs.db
+
+# Generated artifacts - regenerable from run_all.py; not committed
+# Price data is downloaded on first run and not redistributed (see README)
+data/
+results/
+figures/
+paper/build/
+# scripts/check_pdf.py renders here to retain the xelatex .log
+build/
+
+# External review working files; superseded by the v1.1 edit brief
+review_2026-11-05/

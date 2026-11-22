@@ -1,0 +1,176 @@
+% ==========================================================================
+% references.bib
+% Bibliography for "Cointegration is necessary but not sufficient:
+% a stat-arb study across seven U.S. equity pairs" - Dominic Brandes
+%
+% Wiring: place in repo root, add to YAML front matter:
+%     bibliography: references.bib
+%     csl: chicago-author-date.csl   (or a finance-journal CSL)
+% then render with:  pandoc ... --citeproc
+% Insert the inline keys (e.g. [@engle1987]) at the points listed in the
+% accompanying integration map. Do NOT hand-write the References section;
+% --citeproc generates it from the cited keys.
+% ==========================================================================
+
+% --- Cointegration and unit-root tests -----------------------------------
+
+@article{engle1987,
+  author  = {Engle, Robert F. and Granger, Clive W. J.},
+  title   = {Co-Integration and Error Correction: Representation, Estimation, and Testing},
+  journal = {Econometrica},
+  volume  = {55},
+  number  = {2},
+  pages   = {251--276},
+  year    = {1987}
+}
+
+@article{johansen1991,
+  author  = {Johansen, S{\o}ren},
+  title   = {Estimation and Hypothesis Testing of Cointegration Vectors in Gaussian Vector Autoregressive Models},
+  journal = {Econometrica},
+  volume  = {59},
+  number  = {6},
+  pages   = {1551--1580},
+  year    = {1991}
+}
+
+@article{phillips1990,
+  author  = {Phillips, Peter C. B. and Ouliaris, Sam},
+  title   = {Asymptotic Properties of Residual Based Tests for Cointegration},
+  journal = {Econometrica},
+  volume  = {58},
+  number  = {1},
+  pages   = {165--193},
+  year    = {1990}
+}
+
+@article{mackinnon1996,
+  author  = {MacKinnon, James G.},
+  title   = {Numerical Distribution Functions for Unit Root and Cointegration Tests},
+  journal = {Journal of Applied Econometrics},
+  volume  = {11},
+  number  = {6},
+  pages   = {601--618},
+  year    = {1996}
+}
+
+@article{neweywest1987,
+  author  = {Newey, Whitney K. and West, Kenneth D.},
+  title   = {A Simple, Positive Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance Matrix},
+  journal = {Econometrica},
+  volume  = {55},
+  number  = {3},
+  pages   = {703--708},
+  year    = {1987}
+}
+
+@article{mackinnon1999,
+  author  = {MacKinnon, James G. and Haug, Alfred A. and Michelis, Leo},
+  title   = {Numerical Distribution Functions of Likelihood Ratio Tests for Cointegration},
+  journal = {Journal of Applied Econometrics},
+  volume  = {14},
+  number  = {5},
+  pages   = {563--577},
+  year    = {1999}
+}
+
+% --- Pairs trading and statistical arbitrage ------------------------------
+
+@article{gatev2006,
+  author  = {Gatev, Evan and Goetzmann, William N. and Rouwenhorst, K. Geert},
+  title   = {Pairs Trading: Performance of a Relative-Value Arbitrage Rule},
+  journal = {Review of Financial Studies},
+  volume  = {19},
+  number  = {3},
+  pages   = {797--827},
+  year    = {2006}
+}
+
+@book{vidyamurthy2004,
+  author    = {Vidyamurthy, Ganapathy},
+  title     = {Pairs Trading: Quantitative Methods and Analysis},
+  publisher = {Wiley},
+  year      = {2004}
+}
+
+@article{avellaneda2010,
+  author  = {Avellaneda, Marco and Lee, Jeong-Hyun},
+  title   = {Statistical Arbitrage in the {U.S.} Equities Market},
+  journal = {Quantitative Finance},
+  volume  = {10},
+  number  = {7},
+  pages   = {761--782},
+  year    = {2010}
+}
+
+@article{krauss2017,
+  author  = {Krauss, Christopher},
+  title   = {Statistical Arbitrage Pairs Trading Strategies: Review and Outlook},
+  journal = {Journal of Economic Surveys},
+  volume  = {31},
+  number  = {2},
+  pages   = {513--545},
+  year    = {2017}
+}
+
+@article{tadi2021,
+  author  = {Tadi, Masood and Kortchemski, Irina},
+  title   = {Evaluation of a Dynamic Cointegration-Based Pairs Trading Strategy in the Cryptocurrency Market},
+  journal = {arXiv preprint arXiv:2109.10662},
+  year    = {2021},
+  note    = {q-fin.TR}
+}
+
+% --- Sharpe-ratio inference and backtest overfitting ----------------------
+
+@article{bailey2014deflated,
+  author  = {Bailey, David H. and L{\'o}pez de Prado, Marcos},
+  title   = {The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting, and Non-Normality},
+  journal = {Journal of Portfolio Management},
+  volume  = {40},
+  number  = {5},
+  pages   = {94--107},
+  year    = {2014}
+}
+
+@article{bailey2014pseudo,
+  author  = {Bailey, David H. and Borwein, Jonathan M. and L{\'o}pez de Prado, Marcos and Zhu, Qiji Jim},
+  title   = {Pseudo-Mathematics and Financial Charlatanism: The Effects of Backtest Overfitting on Out-of-Sample Performance},
+  journal = {Notices of the American Mathematical Society},
+  volume  = {61},
+  number  = {5},
+  pages   = {458--471},
+  year    = {2014}
+}
+
+% --- Event-study methodology and resampling -------------------------------
+
+@article{mackinlay1997,
+  author  = {MacKinlay, A. Craig},
+  title   = {Event Studies in Economics and Finance},
+  journal = {Journal of Economic Literature},
+  volume  = {35},
+  number  = {1},
+  pages   = {13--39},
+  year    = {1997}
+}
+
+@article{efron1979,
+  author  = {Efron, Bradley},
+  title   = {Bootstrap Methods: Another Look at the Jackknife},
+  journal = {Annals of Statistics},
+  volume  = {7},
+  number  = {1},
+  pages   = {1--26},
+  year    = {1979}
+}
+
+@article{politis1994,
+  author  = {Politis, Dimitris N. and Romano, Joseph P.},
+  title   = {The Stationary Bootstrap},
+  journal = {Journal of the American Statistical Association},
+  volume  = {89},
+  number  = {428},
+  pages   = {1303--1313},
+  year    = {1994}
+}

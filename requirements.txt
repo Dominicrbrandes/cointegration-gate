@@ -1,0 +1,18 @@
+numpy>=2.0,<3
+pandas>=2.2,<3
+scipy>=1.13,<2
+statsmodels>=0.14,<0.15
+arch>=7.0,<8
+yfinance>=0.2.50
+pandas-datareader>=0.10
+pandas-market-calendars>=4
+matplotlib>=3.9,<4
+PyYAML>=6
+pyarrow>=17
+tqdm>=4.66
+pytest>=8
+
+# Paper rendering (markdown -> PDF). Used by scripts/render_paper.py when
+# pandoc is not installed. Pandoc + xelatex is preferred when available.
+markdown>=3.5
+xhtml2pdf>=0.2.13

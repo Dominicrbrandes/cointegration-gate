@@ -1,0 +1,167 @@
+# pairs-stat-arb/config.yaml
+# Pre-specified universe and parameters. Fixed BEFORE any test runs.
+# Author: Dominic Brandes
+# Do not edit values after the first run without recording the change in CHANGELOG.md.
+
+project:
+  author: "Dominic Brandes"
+  name: "pairs-stat-arb"
+  master_seed: 42
+
+data:
+  source_primary: "yfinance"
+  source_fallback: "stooq"
+  field: "Adj Close"
+  cache_dir: "data/raw"
+  start_date: "2014-04-03"          # binding constraint: GOOG/GOOGL C-share creation
+  end_date: "auto"                  # resolved at fetch time to latest available bar; stamped into results
+  train_test_split_date: "2022-12-31"
+  calendar: "NYSE"
+  drop_if_any_missing: true         # inner-join; forward-fill is NOT allowed
+  min_obs_per_pair: 1500
+  # input_space governs the analysis frame consumed by cointegration, spread, signal, and P&L.
+  # Log-prices put both legs in proportional-return space, so:
+  #   - residual variance is approximately homoscedastic (EG/PO assume this)
+  #   - the cointegrating β is an elasticity, not scale-dependent
+  #   - the log-spread is relative mispricing, not a dollar gap
+  #   - Δ(log-spread) is a log-return approximation, directly commensurable with bps costs
+  # Raw levels are retained for raw-price plots and dollar-capacity scaling only.
+  input_space: "log"                # one of {"log", "level"}; downstream uses pair.df (log when "log")
+
+universe:
+  - id: "GOOG_GOOGL"
+    legs: ["GOOG", "GOOGL"]
+    category: "dual-class"
+    rationale: "Claims on the same company; GOOGL has voting rights, GOOG does not."
+    a_priori: "strongest cointegration case"
+
+  - id: "V_MA"
+    legs: ["V", "MA"]
+    category: "payment-networks"
+    rationale: "Same duopoly business model, same macro drivers."
+    a_priori: "likely cointegrated"
+
+  - id: "XOM_CVX"
+    legs: ["XOM", "CVX"]
+    category: "integrated-oil"
+    rationale: "Same commodity exposure, same sector shocks."
+    a_priori: "plausible, regime-dependent"
+
+  - id: "KO_PEP"
+    legs: ["KO", "PEP"]
+    category: "beverages"
+    rationale: "Classic textbook pair; same demand drivers."
+    a_priori: "often fails in modern data; instructive"
+
+  - id: "HD_LOW"
+    legs: ["HD", "LOW"]
+    category: "home-improvement"
+    rationale: "Duopoly, same housing/consumer cycle."
+    a_priori: "borderline"
+
+  - id: "GLD_GDX"
+    legs: ["GLD", "GDX"]
+    category: "gold-vs-miners"
+    rationale: "Miners are levered gold exposure."
+    a_priori: "loose, unstable beta; interesting borderline"
+
+  - id: "SPY_QQQ"
+    legs: ["SPY", "QQQ"]
+    category: "negative-control"
+    rationale: "Both broad equity beta; QQQ is a tech-tilted, higher-beta subset; log-spread trends."
+    a_priori: "should fail all tests"
+
+cointegration:
+  alpha: 0.05
+  rolling_window: 126               # ~6 months trading days; rolling EG p-value is a DIAGNOSTIC
+  johansen:
+    det_order: 0                    # constant in cointegrating relation, no trend
+    k_ar_diff: 1
+  phillips_ouliaris:
+    trend: "c"                      # constant
+    test_type: "Zt"                 # the headline PO statistic
+    kernel: "bartlett"
+    bandwidth: "auto"
+  # Decision rule for "genuinely cointegrated" - STATIC TESTS ONLY.
+  # Locked ex ante. Rolling fraction is reported as a stability diagnostic, NOT a gate.
+  decision_rule:
+    static_tests_required: 2        # of {EG worse-of-two orderings, Johansen trace, PO Z_t}
+    alpha: 0.05
+
+spread:
+  hedge_ratio: "engle_granger_train"        # α, β from EG regression on training window ONLY
+  preferred_ordering: "by_eg_adf_tstat"     # pick LHS ordering with more negative EG residual ADF t-stat
+                                            # (was "by_aic"; AIC is not comparable across LHS orderings
+                                            #  because the dependent variable differs - see CHANGELOG.md)
+  half_life:
+    method: "OU_AR1_OLS"                    # Δs_t = a + b * s_{t-1} + ε; HL = -ln(2)/ln(1+b)
+    floor_days: 2
+    ceil_days: 252
+
+signal:
+  # Fixed discrete grid; ~12 cells. Selected by maximizing TRAINING Sharpe.
+  # Test set touched once per pair.
+  grid:
+    entry_z:  [1.5, 2.0, 2.5]
+    stop_z:   [3.5]
+    lookback: [15, 20, 30, 40]
+  exit_rule: "zero_crossing"
+  no_lookahead:
+    z_uses: "spread.shift(1).rolling(lookback)"
+    pnl_uses: "position.shift(1) * spread_change"
+
+backtest:
+  position_sizing: "unit_spread"
+  pnl_basis: "spread_change_per_unit"
+  walk_forward:
+    train_window_days: 504
+    test_window_days: 126
+    step_days: 126
+    refit_alpha_beta: true
+    reselect_params: true
+  single_split:
+    use_train_test_split_date: true
+    note: "2023-2025 is a trending mega-cap bull regime - adverse for mean-reversion. Walk-forward is the headline."
+
+costs:
+  baseline_round_trip_bps: 3.0
+  sweep_bps: [0, 2, 4, 6, 8, 10, 12, 15, 20, 25, 30]
+  breakeven_search_bps: [0.0, 60.0]
+  short_borrow_bps_annual: 0
+  note: "Names are ultra-liquid; GOOG/GOOGL spreads are sub-bp. 3 bps is conservative-realistic; breakeven is the headline."
+
+capacity:
+  participation_cap: 0.01
+  adv_window_days: 20
+  linear_impact_bps_per_1pct_participation: 10.0
+  note: "Linear stylized; real impact closer to sqrt in participation. Order-of-magnitude only."
+
+event_study:
+  window: [-10, 60]
+  align_sign: true
+  placebo_extreme_z: true
+  ou_baseline: true
+  bootstrap:
+    method: "stationary_block"
+    B: 2000
+    mean_block_len_days: 10
+    ci: "percentile"
+    ci_level: 0.95
+    seed_offset: 1
+
+monte_carlo:
+  null_spread_paths: 5000
+  seed_offset: 2
+
+portfolio:
+  cointegrated_only: true
+  weighting: "equal"
+  rebalance: "monthly"
+
+reporting:
+  figure_dpi: 150
+  style: "single_matplotlib_style"
+  number_format:
+    sharpe_decimals: 2
+    pvalue_decimals: 3
+    bps_decimals: 1
